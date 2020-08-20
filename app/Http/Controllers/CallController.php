@@ -76,7 +76,7 @@ class CallController extends BaseController{
 
                 $call->areas_of_research = implode(", ",$areas);
 
-            } else if(count($areas == 1)){
+            } else if(count($areas) == 1){
 
                 $call->areas_of_research =  $areas[0];
             }
