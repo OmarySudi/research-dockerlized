@@ -39,9 +39,15 @@ class CallController extends BaseController{
             $call->deadline = $request->get('deadline');
             $call->description = $request->get('description');
             $call->status = $request->get('status');
-            $call->areas_of_research_names = $request->areas_of_research_names;
+            $call->currency = $request->get('currency');
+            //$call->areas_of_research_names = $request->areas_of_research_names;
 
-            $areas = $request->areas_of_research_names;
+            //$areas = $request->areas_of_research_names;
+
+            $areas = [];
+
+            if($request->has('areas_of_research_names'))
+                $areas = $request->areas_of_research_names;
 
             if($request->has('area_1'))
             {
@@ -64,7 +70,16 @@ class CallController extends BaseController{
 
             }
 
-            $call->areas_of_research = implode(", ",$areas);
+            if(count($areas) > 1){
+
+                //if($request->has('areas_of_research_names'))
+
+                $call->areas_of_research = implode(", ",$areas);
+
+            } else if(count($areas == 1)){
+
+                $call->areas_of_research =  $areas[0];
+            }
                 
             if($call->save()):
 
@@ -105,7 +120,7 @@ class CallController extends BaseController{
     public function index(){
 
         $calls = DB::table('calls')->join('funders','calls.funder_id','=','funders.id')
-                            ->select('calls.*','funders.name')->get();
+                            ->select('calls.*','funders.name')->where('calls.status','open')->get();
 
         $OXOResponse = new \Oxoresponse\OXOResponse("Operation successful");
         $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
@@ -213,9 +228,38 @@ class CallController extends BaseController{
             $call->deadline = $request->get('deadline');
             $call->description = $request->get('description');
             $call->status = $request->get('status');
-            $call->areas_of_research_names = $request->areas_of_research_names;
+            $call->currency = $request->get('currency');
+            // $call->areas_of_research_names = $request->areas_of_research_names;
 
-            $areas = $request->areas_of_research_names;
+            // $areas = $request->areas_of_research_names;
+
+            // if($request->has('area_1'))
+            // {
+            //     $call->area_1 = $request->area_1;
+            //     array_push($areas,$request->area_1);
+
+            // }
+                
+            // if($request->has('area_2'))
+            // {
+            //     $call->area_2 = $request->area_2;
+            //     array_push($areas,$request->area_2);
+
+            // }
+
+            // if($request->has('area_3'))
+            // {
+            //     $call->area_3 = $request->area_3;
+            //     array_push($areas,$request->area_3);
+
+            // }
+
+            // $call->areas_of_research = implode(", ",$areas);
+
+            $areas = [];
+
+            if($request->has('areas_of_research_names'))
+                $areas = $request->areas_of_research_names;
 
             if($request->has('area_1'))
             {
@@ -238,7 +282,16 @@ class CallController extends BaseController{
 
             }
 
-            $call->areas_of_research = implode(", ",$areas);
+            if(count($areas) > 1){
+
+                //if($request->has('areas_of_research_names'))
+
+                $call->areas_of_research = implode(", ",$areas);
+
+            } else if(count($areas == 1)){
+
+                $call->areas_of_research =  $areas[0];
+            }
                 
             if($call->save()):
 

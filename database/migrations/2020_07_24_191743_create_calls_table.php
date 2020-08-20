@@ -16,17 +16,17 @@ class CreateCallsTable extends Migration
     {
         Schema::create('calls', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('user_id')->nullable();
             $table->unsignedBigInteger('funder_id');
             $table->string('currency')->default('$');
             $table->string('budget');
             $table->date('deadline');
+            $table->unsignedBigInteger('bids_count')->default(0);
             $table->string('status')->default('open');
-            $table->string('areas_of_research');
+            $table->text('areas_of_research');
             $table->string('area_1')->nullable()->default('');
             $table->string('area_2')->nullable()->default('');
             $table->string('area_3')->nullable()->default('');
-            $table->json('areas_of_research_names');
             $table->string('description');
             $table->timestamps();
 

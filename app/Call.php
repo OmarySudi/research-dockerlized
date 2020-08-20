@@ -25,7 +25,7 @@ class Call extends Model
     ];
 
     protected $casts = [
-        'areas_of_research_names' => 'array'
+        //'areas_of_research_names' => 'array'
     ];
     
     /**

@@ -174,6 +174,8 @@ class UsersController extends BaseController{
             $user->mobile_number = $request->mobile_number;
             //$user->areas_of_research = $request->get('areas_of_research');
 
+            $areas = [];
+
             if($request->has('areas_of_research_names'))
                 $areas = $request->areas_of_research_names;
 
@@ -198,9 +200,26 @@ class UsersController extends BaseController{
 
             }
 
-            if($request->has('areas_of_research_names'))
-                $user->areas_of_research = implode(", ",$areas);
 
+            if($request->has('from_postman')){
+
+                $user->areas_of_research = '';
+
+            } else {
+
+                if(count($areas) > 1){
+
+                    //if($request->has('areas_of_research_names'))
+                        
+                    $user->areas_of_research = implode(", ",$areas);
+    
+                } else if(count($areas == 1)){
+    
+                    $user->areas_of_research = $areas[0];
+                }
+            }
+
+               
             $user->research_system_admin_admin = $request->get('research_system_admin_admin');
         
             $plainPassword = $request->input('password');

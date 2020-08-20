@@ -31,7 +31,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     protected $casts = [
-        'areas_of_research_names' => 'array'
+        //'areas_of_research_names' => 'array'
     ];
     
     /**

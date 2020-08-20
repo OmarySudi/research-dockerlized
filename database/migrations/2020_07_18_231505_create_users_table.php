@@ -21,11 +21,10 @@ class CreateUsersTable extends Migration
             $table->string('mobile_number');
             $table->string('faculty');
             $table->string('department');
-            $table->string('areas_of_research')->nullable()->default('');
+            $table->text('areas_of_research');
             $table->string('area_1')->nullable()->default('');
             $table->string('area_2')->nullable()->default('');
             $table->string('area_3')->nullable()->default('');
-            $table->json('areas_of_research_names')->nullable();
             $table->boolean('research_system_admin_admin')->default(0);
             $table->string('research_system_admin_role')->nullable()->default('');
             $table->string('password');
