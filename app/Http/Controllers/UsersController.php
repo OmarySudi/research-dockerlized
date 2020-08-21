@@ -213,7 +213,7 @@ class UsersController extends BaseController{
                         
                     $user->areas_of_research = implode(", ",$areas);
     
-                } else if(count($areas1) == 1){
+                } else if(count($areas) == 1){
     
                     $user->areas_of_research = $areas[0];
                 }
