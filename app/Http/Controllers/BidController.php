@@ -36,30 +36,43 @@ class BidController extends BaseController{
                 ]
             );
 
-            $bid = new Bid();
+            $bid = Bid::where(["user_id"=>$request->user_id,"call_id"=>$request->call_id])->first();
 
-            $bid->user_id = $request->user_id;
-            $bid->call_id = $request->call_id;
+            if($bid === null){
 
-            if($bid->save()){
+                $bid = new Bid();
 
-                $call = Call::where('id',$request->call_id)->first();
-                $call->bids_count +=1;
-                $call->save();
+                $bid->user_id = $request->user_id;
+                $bid->call_id = $request->call_id;
+    
+                if($bid->save()){
+    
+                    $call = Call::where('id',$request->call_id)->first();
+                    $call->bids_count +=1;
+                    $call->save();
+    
+                    $OXOResponse = new \Oxoresponse\OXOResponse("The application has been sent successfully");
+                    $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+                    $OXOResponse->setObject($bid);
+                    return $OXOResponse->jsonSerialize();
+    
+                } else {
+    
+                    $OXOResponse = new \Oxoresponse\OXOResponse("Failed to create send application. Kindly try again later");
+                    $OXOResponse->setErrorCode(CoreErrors::FAILED_TO_CREATE_RECORD);
+                    $OXOResponse->setObject($bid);
+                    return $OXOResponse->jsonSerialize();
+                }
+            }
+            else {
 
                 $OXOResponse = new \Oxoresponse\OXOResponse("The application has been sent successfully");
                 $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
                 $OXOResponse->setObject($bid);
                 return $OXOResponse->jsonSerialize();
 
-            } else {
-
-                $OXOResponse = new \Oxoresponse\OXOResponse("Failed to create send application. Kindly try again later");
-                $OXOResponse->setErrorCode(CoreErrors::FAILED_TO_CREATE_RECORD);
-                $OXOResponse->setObject($bid);
-                return $OXOResponse->jsonSerialize();
             }
-            
+
         }catch (ValidationException $e) {
             $OXOResponse = new OXOResponse("A validation exception has occured");
             $OXOResponse->addMessage("Make sure you have passed correct data with correct format");
