@@ -39,6 +39,7 @@ class CallController extends BaseController{
             $call->deadline = $request->get('deadline');
             $call->description = $request->get('description');
             $call->status = $request->get('status');
+            $call->call_link = $request->get('call_link');
             $call->currency = $request->get('currency');
             //$call->areas_of_research_names = $request->areas_of_research_names;
 
@@ -48,6 +49,8 @@ class CallController extends BaseController{
 
             if($request->has('areas_of_research_names'))
                 $areas = $request->areas_of_research_names;
+
+            $call->areas = implode(", ",$areas);
 
             if($request->has('area_1'))
             {
@@ -228,6 +231,7 @@ class CallController extends BaseController{
             $call->deadline = $request->get('deadline');
             $call->description = $request->get('description');
             $call->status = $request->get('status');
+            $call->call_link = $request->get('call_link');
             $call->currency = $request->get('currency');
             // $call->areas_of_research_names = $request->areas_of_research_names;
 
@@ -258,8 +262,14 @@ class CallController extends BaseController{
 
             $areas = [];
 
+            $call->areas_of_research = '';
+            $call->areas ='';
+
             if($request->has('areas_of_research_names'))
                 $areas = $request->areas_of_research_names;
+
+          
+            $call->areas = implode(", ",$areas); 
 
             if($request->has('area_1'))
             {
@@ -288,7 +298,7 @@ class CallController extends BaseController{
 
                 $call->areas_of_research = implode(", ",$areas);
 
-            } else if(count($areas == 1)){
+            } else if(count($areas) == 1){
 
                 $call->areas_of_research =  $areas[0];
             }
@@ -300,18 +310,18 @@ class CallController extends BaseController{
                 $OXOResponse->setObject($call);
 
 
-                AreaCall::where('call_id',$id)->delete();
+                // AreaCall::where('call_id',$id)->delete();
 
-                foreach($request->areas_of_research as $area){
+                // foreach($request->areas_of_research as $area){
 
-                    $area_call = new AreaCall();
+                //     $area_call = new AreaCall();
         
-                    $area_call->area_id = intval($area);
+                //     $area_call->area_id = intval($area);
         
-                    $area_call->call_id = $call->id;
+                //     $area_call->call_id = $call->id;
         
-                    $area_call->save();
-                }
+                //     $area_call->save();
+                // }
                 
                 return $OXOResponse->jsonSerialize();
             else:
