@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Exceptions\CoreErrors;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
 //use App\OXOResponse;
 use Oxoresponse\OXOResponse;
 
@@ -41,9 +43,17 @@ class CallController extends BaseController{
             $call->status = $request->get('status');
             $call->call_link = $request->get('call_link');
             $call->currency = $request->get('currency');
+            
             //$call->areas_of_research_names = $request->areas_of_research_names;
 
             //$areas = $request->areas_of_research_names;
+
+            if($request->hasFile('document')){
+
+                $path = $request->file('document')->store('public');
+
+                $call->file_url = $path;
+            }
 
             $areas = [];
 
@@ -177,6 +187,13 @@ class CallController extends BaseController{
 
         //     return $OXOResponse->jsonSerialize();
         // }
+
+    }
+
+    public function downloadFile(Request $request){
+
+        // return Storage::download('public/iDSIngCpmqeRKp70GOzI2c0g0kEL9L5zukF038Eb.pdf');
+        return Storage::download($request->url);
 
     }
 

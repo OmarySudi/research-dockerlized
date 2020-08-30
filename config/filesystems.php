@@ -48,6 +48,11 @@ return [
             'root' => storage_path('app'),
         ],
 
+        'my-disk' => [
+            'driver' => 'local',
+            'root' => '/home/sudi/Desktop/Documents',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

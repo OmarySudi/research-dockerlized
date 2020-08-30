@@ -47,6 +47,7 @@ $router->group(['prefix' => 'api/v1','middleware' => 'auth'],function($router){
     $router->group(['prefix' =>'calls'],function($router){
 
         $router->post('create','CallController@create');
+        $router->post('file/download','CallController@downloadFile');
         $router->post('update/{id}','CallController@update');
         $router->post('delete/{id}','CallController@delete');
         $router->get('names','CallController@getNames');
