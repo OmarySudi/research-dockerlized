@@ -23,7 +23,6 @@ class CallController extends BaseController{
             $this->validate(
                 $request, [
                     'funder' => 'required|string',
-                    'budget' => 'required|string',
                     'deadline' => 'required|string',
                     'description' => 'required|string',
                     'status' => 'required|string',
@@ -37,7 +36,10 @@ class CallController extends BaseController{
             $call = new Call();
       
             $call->funder_id = $funder_id;
-            $call->budget = $request->get('budget');
+
+            if($request->has('budget'))
+                $call->budget = $request->get('budget');
+
             $call->deadline = $request->get('deadline');
             $call->description = $request->get('description');
             $call->status = $request->get('status');
@@ -244,7 +246,10 @@ class CallController extends BaseController{
         } else
         {
             $call->funder_id = $funder_id;
-            $call->budget = $request->get('budget');
+
+            if($request->has('budget'))
+                $call->budget = $request->get('budget');
+
             $call->deadline = $request->get('deadline');
             $call->description = $request->get('description');
             $call->status = $request->get('status');
