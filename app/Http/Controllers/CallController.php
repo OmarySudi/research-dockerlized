@@ -255,6 +255,13 @@ class CallController extends BaseController{
             $call->status = $request->get('status');
             $call->call_link = $request->get('call_link');
             $call->currency = $request->get('currency');
+
+            if($request->hasFile('document')){
+
+                $path = $request->file('document')->store('public');
+
+                $call->file_url = $path;
+            }
             // $call->areas_of_research_names = $request->areas_of_research_names;
 
             // $areas = $request->areas_of_research_names;
