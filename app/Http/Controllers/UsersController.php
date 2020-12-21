@@ -9,6 +9,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Exceptions\CoreErrors;
 use App\OXOResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Suppoert\Facades\Mail;
 // use Aws\Exception\MultipartUploadException;
 use Illuminate\Support\Facades\Hash;
 // use Aws\S3\MultipartUploader;
@@ -266,5 +267,17 @@ class UsersController extends BaseController{
             endif;
         }
  
+    }
+
+    public function sendPasswordResetMail(){
+
+        $data = array('name'=>”Arunkumar”);
+
+        Mail::send('mail', $data, function($message) {
+            $message->to('firesoud@gmail.com', 'Arunkumar')->subject('Test Mail from Selva');
+            $message->from('kekovasudi@gmail.com','Sudi omary');
+        });
+
+        echo 'Emai Sent Check your inbox';
     }
 }

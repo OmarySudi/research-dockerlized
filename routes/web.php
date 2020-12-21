@@ -20,6 +20,7 @@ $router->post('api/v1/user/login', 'UsersController@login');
 $router->post('api/v1/user/register', 'UsersController@create'); 
 $router->get('api/v1/areas/index','AreaController@index');
 $router->get('api/v1/calls/index','CallController@index');
+$router->post('api/v1/password/reset','UsersController@sendPasswordResetMail');
 
 $router->group(['prefix' => 'api/v1','middleware' => 'auth'],function($router){
 
@@ -75,5 +76,15 @@ $router->group(['prefix' => 'api/v1','middleware' => 'auth'],function($router){
         $router->get('fetch-bids/{id}','BidController@fetchBids');
        
     });
+
+    // $router->group(['prefix' =>'emails'],function($router){
+
+    //     $router->post('password/reset','EmailController@create');
+    //     // $router->post('check-user','BidController@checkUserExistance');
+    //     // $router->post('award','BidController@awardBid');
+    //     // $router->post('cancel','BidController@cancelAward');
+    //     // $router->get('fetch-bids/{id}','BidController@fetchBids');
+       
+    // });
 
 });
