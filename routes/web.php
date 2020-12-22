@@ -18,8 +18,12 @@ $router->get('/', function () use ($router) {
 
 $router->post('api/v1/user/login', 'UsersController@login'); 
 $router->post('api/v1/user/register', 'UsersController@create'); 
+$router->post('api/v1/user/change-password', 'UsersController@changePassword'); 
 $router->get('api/v1/areas/index','AreaController@index');
 $router->get('api/v1/calls/index','CallController@index');
+
+$router->get('api/v1/user/getuser/{email}','UsersController@getUserByEmail');
+
 
 $router->group(['prefix' => 'api/v1','middleware' => 'auth'],function($router){
 
