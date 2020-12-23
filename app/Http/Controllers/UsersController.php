@@ -9,7 +9,6 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Exceptions\CoreErrors;
 use App\OXOResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Suppoert\Facades\Mail;
 // use Aws\Exception\MultipartUploadException;
 use Illuminate\Support\Facades\Hash;
 // use Aws\S3\MultipartUploader;
@@ -135,6 +134,64 @@ class UsersController extends BaseController{
         
     }
 
+    public function changePassword(Request $request){
+
+        $this->validate($request, [
+            'email'     => 'required|email',
+            'password'  => 'required'
+        ]);
+
+        $profile = User::where('email', $request->input('email'))->first();
+
+        if ($profile != null):
+          
+            $profile->password = app('hash')->make($request->password);
+            
+            if($profile->save()){
+
+                $OXOResponse = new \Oxoresponse\OXOResponse("You password has been updated successfully");
+                $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+                $OXOResponse->setObject($profile);
+
+                return $OXOResponse->jsonSerialize();
+
+            }else {
+
+                $OXOResponse = new \Oxoresponse\OXOResponse("There is error during changing of password,try again later");
+                $OXOResponse->setErrorCode(CoreErrors::UPDATE_OPERATION_FAILED);
+                $OXOResponse->addErrorToList("There is internal server error");
+                return $OXOResponse;
+            }
+
+        else:
+                $OXOResponse = new \Oxoresponse\OXOResponse("Kindly check your email. ");
+                $OXOResponse->addErrorToList("Email does not exist");
+                $OXOResponse->setErrorCode(CoreErrors::USER_NOT_FOUND);
+                
+                return $OXOResponse;
+        endif;
+    }
+
+    public function getUserByEmail($email){
+
+        $profile = User::where('email', $email)->first();
+
+        if ($profile != null):
+          
+            $OXOResponse = new \Oxoresponse\OXOResponse("User exists");
+            $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+            $OXOResponse->setObject($profile);
+
+            return $OXOResponse->jsonSerialize();
+
+        else:
+                $OXOResponse = new \Oxoresponse\OXOResponse("Kindly check your email. Email does not exists");
+                $OXOResponse->addErrorToList("Email does not exist");
+                $OXOResponse->setErrorCode(CoreErrors::USER_NOT_FOUND);
+                
+                return $OXOResponse;
+        endif;
+    }
     
     public function create(Request $request){
         $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -269,15 +326,4 @@ class UsersController extends BaseController{
  
     }
 
-    public function sendPasswordResetMail(){
-
-        $data = array('name'=>”Arunkumar”);
-
-        Mail::send('mail', $data, function($message) {
-            $message->to('firesoud@gmail.com', 'Arunkumar')->subject('Test Mail from Selva');
-            $message->from('kekovasudi@gmail.com','Sudi omary');
-        });
-
-        echo 'Emai Sent Check your inbox';
-    }
 }
