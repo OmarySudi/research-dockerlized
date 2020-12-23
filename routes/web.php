@@ -1,4 +1,4 @@
- <?php
+<?php
 
 /*
 |--------------------------------------------------------------------------
@@ -20,10 +20,11 @@ $router->post('api/v1/user/login', 'UsersController@login');
 $router->post('api/v1/user/register', 'UsersController@create'); 
 $router->get('api/v1/areas/index','AreaController@index');
 $router->get('api/v1/calls/index','CallController@index');
-$router->get('{id}','CallController@getCall');
+$router->get('api/v1/calls/getCall/{id}','CallController@getCall');
 //$router->post('api/v1/password/reset','UsersController@sendPasswordResetMail');
 
 $router->group(['prefix' => 'api/v1','middleware' => 'auth'],function($router){
+
 
     $router->group(['prefix' => 'user'], function ($router) {
         
@@ -53,6 +54,9 @@ $router->group(['prefix' => 'api/v1','middleware' => 'auth'],function($router){
         $router->post('delete/{id}','CallController@delete');
         $router->get('names','CallController@getNames');
         $router->get('getinfo/{id}','CallController@getCallInfo');
+        //$router->get('getCall/{id}','CallController@getCall');
+       
+        
     });
 
     $router->group(['prefix' =>'areas'],function($router){
