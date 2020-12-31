@@ -193,7 +193,98 @@ class UsersController extends BaseController{
         endif;
     }
     
+
+    public function generate_controlno($input, $strength = 16)
+    {
+        //Generating random values for the control number
+        $input_length = strlen($input);
+        $random_string = '';
+        for ($i = 0; $i < $strength; $i++) {
+            $random_character = $input[mt_rand(0, $input_length - 1)];
+            $random_string .= $random_character;
+        }
+    
+        return $random_string;
+    }
+
+    public function unsubscribeUser($userID){
+
+        $user = User::where('user_id',$userID)->firstOr(function(){
+
+            $OXOResponse = new OXOResponse("Record not found");
+            $OXOResponse->addErrorToList("make sure you have passed correct userID");
+            $OXOResponse->setErrorCode(CoreErrors::RECORD_NOT_FOUND);
+
+            return $OXOResponse;
+        });
+
+        if($user instanceof OXOResponse){
+
+            return $user->jsonSerialize();
+        }
+        else {
+
+           $user->subscribe = 0; 
+
+           if($user->save()){
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("User unsubscribed successfully");
+            $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+            $OXOResponse->setObject($user);
+
+            return $OXOResponse->jsonSerialize();
+
+           }else{
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("There is an internal error,try again later");
+            $OXOResponse->setErrorCode(CoreErrors::UPDATE_OPERATION_FAILED);
+            $OXOResponse->addErrorToList("There is internal server error");
+            return $OXOResponse;
+
+           }
+        }
+    }
+
+    public function subscribeUser($userID){
+
+        $user = User::where('user_id',$userID)->firstOr(function(){
+
+            $OXOResponse = new OXOResponse("Record not found");
+            $OXOResponse->addErrorToList("make sure you have passed correct userID");
+            $OXOResponse->setErrorCode(CoreErrors::RECORD_NOT_FOUND);
+
+            return $OXOResponse;
+        });
+
+        if($user instanceof OXOResponse){
+
+            return $user->jsonSerialize();
+        }
+        else {
+
+           $user->subscribe = 1; 
+
+           if($user->save()){
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("User subscribed successfully");
+            $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+            $OXOResponse->setObject($user);
+
+            return $OXOResponse->jsonSerialize();
+
+           }else{
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("There is an internal error,try again later");
+            $OXOResponse->setErrorCode(CoreErrors::UPDATE_OPERATION_FAILED);
+            $OXOResponse->addErrorToList("There is internal server error");
+            return $OXOResponse;
+
+           }
+        }
+    }
+
     public function create(Request $request){
+
         $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
         $this->validate(
@@ -230,6 +321,7 @@ class UsersController extends BaseController{
             $user->faculty = $request->get('faculty');
             $user->department = $request->get('department');
             $user->mobile_number = $request->mobile_number;
+            $user->user_id = $this->generate_controlno($permitted_chars, 5);
             //$user->areas_of_research = $request->get('areas_of_research');
 
             $areas = [];

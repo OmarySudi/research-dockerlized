@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Call;
+use App\User;
 use App\Funder;
 use App\AreaCall;
 use Illuminate\Http\Request;
@@ -403,5 +404,64 @@ class CallController extends BaseController{
             }
 
     }
+
+    public function getListOfEmailsToNotify(){
+
+        $calls = Call::where("is_email_sent",0)->get();
+
+        if(count($calls) > 0){
+
+           $users = User::where("subscribe",1)->get();
+
+           $OXOResponse = new \Oxoresponse\OXOResponse("Operation successful");
+           $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+           $OXOResponse->setObject($users);
+           return $OXOResponse->jsonSerialize();
+
+        }
+        else {
+
+            $OXOResponse = new OXOResponse("Calls not found");
+            $OXOResponse->addErrorToList("No new calls found");
+            $OXOResponse->setErrorCode(CoreErrors::RECORD_NOT_FOUND);
+
+            return $OXOResponse;
+
+        }
+
+    }
+
+    public function markCallsASEmailSent(){
+
+        $calls = Call::where("is_email_sent",0)->get();
+
+        if(count($calls) > 0){
+
+            foreach($calls as $call){
+
+                $call->is_email_sent = 1;
+
+                $call->save();
+            }
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("Operation successful");
+            $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+            $OXOResponse->setObject($calls);
+            return $OXOResponse->jsonSerialize();
+
+        }
+        else {
+
+            $OXOResponse = new OXOResponse("Calls not found");
+            $OXOResponse->addErrorToList("No new calls found");
+            $OXOResponse->setErrorCode(CoreErrors::RECORD_NOT_FOUND);
+
+            return $OXOResponse;
+
+        }
+
+    }
+
+    
 
 }
