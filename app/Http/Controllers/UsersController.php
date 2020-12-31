@@ -134,6 +134,8 @@ class UsersController extends BaseController{
         
     }
 
+   
+
     public function changePassword(Request $request){
 
         $this->validate($request, [
@@ -229,6 +231,44 @@ class UsersController extends BaseController{
            if($user->save()){
 
             $OXOResponse = new \Oxoresponse\OXOResponse("User unsubscribed successfully");
+            $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+            $OXOResponse->setObject($user);
+
+            return $OXOResponse->jsonSerialize();
+
+           }else{
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("There is an internal error,try again later");
+            $OXOResponse->setErrorCode(CoreErrors::UPDATE_OPERATION_FAILED);
+            $OXOResponse->addErrorToList("There is internal server error");
+            return $OXOResponse;
+
+           }
+        }
+    }
+
+    public function makeUserAdmin($userID){
+        
+        $user = User::where('user_id',$userID)->firstOr(function(){
+
+            $OXOResponse = new OXOResponse("Record not found");
+            $OXOResponse->addErrorToList("make sure you have passed correct userID");
+            $OXOResponse->setErrorCode(CoreErrors::RECORD_NOT_FOUND);
+
+            return $OXOResponse;
+        });
+
+        if($user instanceof OXOResponse){
+
+            return $user->jsonSerialize();
+        }
+        else {
+
+           $user->research_system_admin_role = "ROLE_admin"; 
+
+           if($user->save()){
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("user with id ".$userID. "is admin");
             $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
             $OXOResponse->setObject($user);
 

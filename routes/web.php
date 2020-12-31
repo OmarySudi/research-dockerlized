@@ -42,6 +42,7 @@ $router->group(['prefix' => 'api/v1','middleware' => 'auth'],function($router){
         $router->get('fetchEmail/{user_email}', 'UsersController@fetchEmail');
         $router->post('logout', 'UsersController@logout');
         $router->post('create', 'UsersController@create'); 
+        $router->post('/make-admin/{userID}','UsersController@makeUserAdmin');
         $router->post('/subscribe/{userID}','UsersController@subscribeUser');
     });
 
