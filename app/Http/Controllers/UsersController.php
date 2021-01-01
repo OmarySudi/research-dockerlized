@@ -247,12 +247,25 @@ class UsersController extends BaseController{
         }
     }
 
+    public function fetchAllAdmins(){
+
+        $admins = User::where('research_system_admin_role',"ROLE_admin")->get();
+
+        $OXOResponse = new \Oxoresponse\OXOResponse("Operation successful");
+        $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+        $OXOResponse->setObject($admins);
+
+        return $OXOResponse->jsonSerialize();
+
+
+    }
+
     public function makeUserAdmin($userID){
         
-        $user = User::where('user_id',$userID)->firstOr(function(){
+        $user = User::where('id',$userID)->firstOr(function(){
 
             $OXOResponse = new OXOResponse("Record not found");
-            $OXOResponse->addErrorToList("make sure you have passed correct userID");
+            $OXOResponse->addErrorToList("make sure you have passed correct id");
             $OXOResponse->setErrorCode(CoreErrors::RECORD_NOT_FOUND);
 
             return $OXOResponse;
@@ -268,7 +281,7 @@ class UsersController extends BaseController{
 
            if($user->save()){
 
-            $OXOResponse = new \Oxoresponse\OXOResponse("user with id ".$userID. "is admin");
+            $OXOResponse = new \Oxoresponse\OXOResponse("user has been granted admin privileges");
             $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
             $OXOResponse->setObject($user);
 
@@ -320,6 +333,34 @@ class UsersController extends BaseController{
             return $OXOResponse;
 
            }
+        }
+    }
+
+    public function deleteUser($id){
+
+        $user = User::where('id',$id)->firstOr(function(){
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("Record not found");
+            $OXOResponse->addErrorToList("make sure you have passed correct userID");
+            $OXOResponse->setErrorCode(CoreErrors::RECORD_NOT_FOUND);
+
+            return $OXOResponse;
+        });
+
+        if($user instanceof OXOResponse){
+
+            return $user->jsonSerialize();
+        }
+        else {
+
+            $user->delete();
+
+            $OXOResponse = new \Oxoresponse\OXOResponse("user deleted successful");
+            $OXOResponse->setErrorCode(CoreErrors::OPERATION_SUCCESSFUL);
+            $OXOResponse->setObject($user);
+
+            return $OXOResponse->jsonSerialize();
+
         }
     }
 
